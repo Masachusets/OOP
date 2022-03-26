@@ -19,6 +19,10 @@ class Student:
         else:
             return 'Ошибка'
 
+    def __str__(self):
+        average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
+        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {average_rating} \nКурсы в процессе изучения: {self.courses_in_progress} \nЗавершённые курсы: {self.finished_courses}'
+
 
 class Mentor:
     def __init__(self, name, surname):
@@ -31,6 +35,10 @@ class Lecturer(Mentor):
     def __init__(self, name, surname):
         super().__init__(name, surname)
         self.grades = {}
+
+    def __str__(self):
+        average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
+        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: {average_rating}'
 
 
 class Reviewer(Mentor):
@@ -45,6 +53,9 @@ class Reviewer(Mentor):
                 student.grades[course] = [grade]
         else:
             return 'Ошибка'
+
+    def __str__(self):
+        return f'Имя: {self.name} \nФамилия: {self.surname}'
 
 # best_student = Student('Ruoy', 'Eman', 'your_gender')
 # best_student.courses_in_progress += ['Python']
