@@ -6,6 +6,7 @@ class Student:
         self.finished_courses = []
         self.courses_in_progress = []
         self.grades = {}
+        self.average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
 
     def add_courses(self, course_name):
         self.finished_course.append(course_name)
@@ -20,8 +21,22 @@ class Student:
             return 'Ошибка'
 
     def __str__(self):
-        average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
-        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {average_rating} \nКурсы в процессе изучения: {self.courses_in_progress} \nЗавершённые курсы: {self.finished_courses}'
+        if self.grades:
+            average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
+            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {average_rating} \nКурсы в процессе изучения: {self.courses_in_progress} \nЗавершённые курсы: {self.finished_courses}'
+        else:
+            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {0} \nКурсы в процессе изучения: {self.courses_in_progress} \nЗавершённые курсы: {self.finished_courses}'
+
+    def __lt__(self, other):
+        if not isinstance(other, Student):
+            return
+        elif self.grades and other.grades:
+            self_average_rating = sum(self.grades.values()) / len(self.grades.values())
+            other_average_rating = sum(other.grades.values()) / len(other.grades.values())
+            return self_average_rating < other_average_rating
+        else:
+            return
+
 
 
 class Mentor:
@@ -40,11 +55,18 @@ class Lecturer(Mentor):
         average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
         return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: {average_rating}'
 
+    def __lt__(self, other):
+        if not isinstance(other, Student):
+            return
+        elif self.grades and other.grades:
+            self_average_rating = sum(self.grades.values()) / len(self.grades.values())
+            other_average_rating = sum(other.grades.values()) / len(other.grades.values())
+            return self_average_rating < other_average_rating
+        else:
+            return
+
 
 class Reviewer(Mentor):
-    def __init__(self, name, surname):
-        super().__init__(name, surname)
-
     def rate_hw(self, student, course, grade):
         if isinstance(student, Student) and course in self.courses_attached and course in student.courses_in_progress:
             if course in student.grades:
