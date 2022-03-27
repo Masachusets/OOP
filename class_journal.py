@@ -6,10 +6,9 @@ class Student:
         self.finished_courses = []
         self.courses_in_progress = []
         self.grades = {}
-        self.average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
 
     def add_courses(self, course_name):
-        self.finished_course.append(course_name)
+        self.finished_courses.append(course_name)
 
     def rate_lecturer(self, lecturer, course, grade):
         if isinstance(lecturer, Lecturer) and course in (self.finished_courses + self.courses_in_progress) and course in lecturer.courses_attached:
@@ -23,9 +22,9 @@ class Student:
     def __str__(self):
         if self.grades:
             average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
-            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {average_rating} \nКурсы в процессе изучения: {self.courses_in_progress} \nЗавершённые курсы: {self.finished_courses}'
+            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {average_rating} \nКурсы в процессе изучения: {", ".join(self.courses_in_progress) if self.courses_in_progress else "Нет"} \nЗавершённые курсы: {", ".join(self.finished_courses) if self.finished_courses else "Нет"}'
         else:
-            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {0} \nКурсы в процессе изучения: {self.courses_in_progress} \nЗавершённые курсы: {self.finished_courses}'
+            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: Нет оценок \nКурсы в процессе изучения: {", ".join(self.courses_in_progress) if self.courses_in_progress else "Нет"} \nЗавершённые курсы: {", ".join(self.finished_courses) if self.finished_courses else "Нет"}'
 
     def __lt__(self, other):
         if not isinstance(other, Student):
@@ -36,7 +35,6 @@ class Student:
             return self_average_rating < other_average_rating
         else:
             return
-
 
 
 class Mentor:
@@ -52,18 +50,21 @@ class Lecturer(Mentor):
         self.grades = {}
 
     def __str__(self):
-        average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
-        return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: {average_rating}'
+        if self.grades:
+            average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
+            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: {average_rating}'
+        else:
+            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: Нет оценок'
 
     def __lt__(self, other):
         if not isinstance(other, Student):
-            return
+            return 'Кто-то не студент'
         elif self.grades and other.grades:
             self_average_rating = sum(self.grades.values()) / len(self.grades.values())
             other_average_rating = sum(other.grades.values()) / len(other.grades.values())
             return self_average_rating < other_average_rating
         else:
-            return
+            return 'У одного или у обоих студентов нет оценок!'
 
 
 class Reviewer(Mentor):
@@ -79,14 +80,34 @@ class Reviewer(Mentor):
     def __str__(self):
         return f'Имя: {self.name} \nФамилия: {self.surname}'
 
-# best_student = Student('Ruoy', 'Eman', 'your_gender')
-# best_student.courses_in_progress += ['Python']
-#
-# cool_mentor = Mentor('Some', 'Buddy')
-# cool_mentor.courses_attached += ['Python']
-#
-# cool_mentor.rate_hw(best_student, 'Python', 10)
-# cool_mentor.rate_hw(best_student, 'Python', 10)
-# cool_mentor.rate_hw(best_student, 'Python', 10)
-#
-# print(best_student.grades)
+first_student = Student('Leroy', 'Jankins', 'male')
+first_student.courses_in_progress += ['Python', 'Git']
+
+second_student = Student('Sylvanas', 'Windrunner', 'female')
+second_student.courses_in_progress += ['Python']
+second_student.add_courses('Git')
+
+first_lecturer = Lecturer('Johnny', 'Cage')
+first_lecturer.courses_attached += ['Python']
+
+second_lecturer = Lecturer('Liu', 'Kang')
+second_lecturer.courses_attached += ['Git']
+
+first_reviewer = Reviewer('Shang', 'Tsung')
+first_reviewer.courses_attached += ['Python']
+
+second_reviewer = Reviewer('Shao', 'Kahn')
+second_reviewer.courses_attached += ['Git']
+
+# first_mentor.rate_hw(first_student, 'Python', 10)
+# first_mentor.rate_hw(first_student, 'Python', 10)
+# first_mentor.rate_hw(first_student, 'Python', 10)
+
+print(first_student)
+print(second_student)
+
+print(first_lecturer)
+print(second_lecturer)
+
+print(first_reviewer)
+print(second_reviewer)
