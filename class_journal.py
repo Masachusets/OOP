@@ -11,7 +11,8 @@ class Student:
         self.finished_courses.append(course_name)
 
     def rate_lecturer(self, lecturer, course, grade):
-        if isinstance(lecturer, Lecturer) and course in (self.finished_courses + self.courses_in_progress) and course in lecturer.courses_attached:
+        if isinstance(lecturer, Lecturer) and course in (self.finished_courses + self.courses_in_progress) \
+                and course in lecturer.courses_attached:
             if course in lecturer.grades:
                 lecturer.grades[course] += [grade]
             else:
@@ -21,10 +22,18 @@ class Student:
 
     def __str__(self):
         if self.grades:
-            average_rating = round(sum(*self.grades.values()) / len(*self.grades.values()), 1)
-            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {average_rating} \nКурсы в процессе изучения: {", ".join(self.courses_in_progress) if self.courses_in_progress else "Нет"} \nЗавершённые курсы: {", ".join(self.finished_courses) if self.finished_courses else "Нет"}'
+            average_rating = sum(*self.grades.values()) / len(*self.grades.values())
+            return f'Имя: {self.name} \n' \
+                   f'Фамилия: {self.surname} \n' \
+                   f'Средняя оценка за домашние задания: {average_rating: .{1}f} \n' \
+                   f'Курсы в процессе изучения: {", ".join(self.courses_in_progress) if self.courses_in_progress else "Нет"} \n' \
+                   f'Завершённые курсы: {", ".join(self.finished_courses) if self.finished_courses else "Нет"}'
         else:
-            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: Нет оценок \nКурсы в процессе изучения: {", ".join(self.courses_in_progress) if self.courses_in_progress else "Нет"} \nЗавершённые курсы: {", ".join(self.finished_courses) if self.finished_courses else "Нет"}'
+            return f'Имя: {self.name} \n' \
+                   f'Фамилия: {self.surname} \n' \
+                   f'Средняя оценка за домашние задания: Нет оценок \n' \
+                   f'Курсы в процессе изучения: {", ".join(self.courses_in_progress) if self.courses_in_progress else "Нет"} \n' \
+                   f'Завершённые курсы: {", ".join(self.finished_courses) if self.finished_courses else "Нет"}'
 
     def __lt__(self, other):
         if not isinstance(other, Student):
@@ -51,10 +60,14 @@ class Lecturer(Mentor):
 
     def __str__(self):
         if self.grades:
-            average_rating = round(sum(*self.grades.values()) / len(*self.grades.values()), 1)
-            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: {average_rating}'
+            average_rating = sum(*self.grades.values()) / len(*self.grades.values())
+            return f'Имя: {self.name} \n' \
+                   f'Фамилия: {self.surname} \n' \
+                   f'Средняя оценка за лекции: {average_rating: .{1}f}'
         else:
-            return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: Нет оценок'
+            return f'Имя: {self.name} \n' \
+                   f'Фамилия: {self.surname} \n' \
+                   f'Средняя оценка за лекции: Нет оценок'
 
     def __lt__(self, other):
         if not isinstance(other, Lecturer):
@@ -79,6 +92,28 @@ class Reviewer(Mentor):
 
     def __str__(self):
         return f'Имя: {self.name} \nФамилия: {self.surname}'
+
+
+def average_students(students, course):
+    all_rate = []
+    for student in students:
+        if not isinstance(student, Student):
+            return f'{student.name} {student.surname} не студент'
+        if course in student.grades:
+            all_rate += student.grades[course]
+    return f'Средняя оценка всех студентов за курс {course}: {sum(all_rate) / len(all_rate): .{1}f}' if all_rate \
+        else f'В курсе {course} у студентов нет оценок'
+
+
+def average_lecturers(lecturers, course):
+    all_rate = []
+    for lecturer in lecturers:
+        if not isinstance(lecturer, Lecturer):
+            return f'{lecturer.name} {lecturer.surname} не лектор'
+        if course in lecturer.grades:
+            all_rate += lecturer.grades[course]
+    return f'Средняя оценка всех лекторов за курс {course}: {sum(all_rate) / len(all_rate): .{1}f}' if all_rate \
+        else f'В курсе {course} у лекторов нет оценок'
 
 
 first_student = Student('Leroy', 'Jankins', 'male')
@@ -130,3 +165,6 @@ print(second_reviewer)
 
 print(first_student > second_student)
 print(first_lecturer < second_lecturer)
+
+print(average_students([first_student, second_student], 'Python'))
+print(average_lecturers([first_lecturer, second_lecturer], 'Git'))
