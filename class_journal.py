@@ -21,20 +21,20 @@ class Student:
 
     def __str__(self):
         if self.grades:
-            average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
+            average_rating = round(sum(*self.grades.values()) / len(*self.grades.values()), 1)
             return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: {average_rating} \nКурсы в процессе изучения: {", ".join(self.courses_in_progress) if self.courses_in_progress else "Нет"} \nЗавершённые курсы: {", ".join(self.finished_courses) if self.finished_courses else "Нет"}'
         else:
             return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за домашние задания: Нет оценок \nКурсы в процессе изучения: {", ".join(self.courses_in_progress) if self.courses_in_progress else "Нет"} \nЗавершённые курсы: {", ".join(self.finished_courses) if self.finished_courses else "Нет"}'
 
     def __lt__(self, other):
         if not isinstance(other, Student):
-            return
+            return 'Кто-то не студент'
         elif self.grades and other.grades:
-            self_average_rating = sum(self.grades.values()) / len(self.grades.values())
-            other_average_rating = sum(other.grades.values()) / len(other.grades.values())
+            self_average_rating = sum(*self.grades.values()) / len(*self.grades.values())
+            other_average_rating = sum(*other.grades.values()) / len(*other.grades.values())
             return self_average_rating < other_average_rating
         else:
-            return
+            return 'У одного или у обоих студентов нет оценок!'
 
 
 class Mentor:
@@ -51,20 +51,20 @@ class Lecturer(Mentor):
 
     def __str__(self):
         if self.grades:
-            average_rating = round(sum(self.grades.values()) / len(self.grades.values()), 1)
+            average_rating = round(sum(*self.grades.values()) / len(*self.grades.values()), 1)
             return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: {average_rating}'
         else:
             return f'Имя: {self.name} \nФамилия: {self.surname} \nСредняя оценка за лекции: Нет оценок'
 
     def __lt__(self, other):
-        if not isinstance(other, Student):
-            return 'Кто-то не студент'
+        if not isinstance(other, Lecturer):
+            return 'Кто-то не лектор'
         elif self.grades and other.grades:
-            self_average_rating = sum(self.grades.values()) / len(self.grades.values())
-            other_average_rating = sum(other.grades.values()) / len(other.grades.values())
+            self_average_rating = sum(*self.grades.values()) / len(*self.grades.values())
+            other_average_rating = sum(*other.grades.values()) / len(*other.grades.values())
             return self_average_rating < other_average_rating
         else:
-            return 'У одного или у обоих студентов нет оценок!'
+            return 'У одного или у обоих лекторов нет оценок!'
 
 
 class Reviewer(Mentor):
@@ -75,10 +75,11 @@ class Reviewer(Mentor):
             else:
                 student.grades[course] = [grade]
         else:
-            return 'Ошибка'
+            return print('Ошибка')
 
     def __str__(self):
         return f'Имя: {self.name} \nФамилия: {self.surname}'
+
 
 first_student = Student('Leroy', 'Jankins', 'male')
 first_student.courses_in_progress += ['Python', 'Git']
@@ -99,9 +100,24 @@ first_reviewer.courses_attached += ['Python']
 second_reviewer = Reviewer('Shao', 'Kahn')
 second_reviewer.courses_attached += ['Git']
 
-# first_mentor.rate_hw(first_student, 'Python', 10)
-# first_mentor.rate_hw(first_student, 'Python', 10)
-# first_mentor.rate_hw(first_student, 'Python', 10)
+first_reviewer.rate_hw(first_student, 'Python', 8)
+first_reviewer.rate_hw(first_student, 'Python', 8)
+first_reviewer.rate_hw(first_student, 'Python', 10)
+first_student.add_courses('Введение в программирование')
+first_student.rate_lecturer(first_lecturer, 'Python', 10)
+first_student.rate_lecturer(first_lecturer, 'Python', 9)
+first_student.rate_lecturer(first_lecturer, 'Python', 10)
+
+# print(first_student > second_student)
+# print(first_lecturer > second_lecturer)
+
+first_reviewer.rate_hw(second_student, 'Python', 6)
+first_reviewer.rate_hw(second_student, 'Python', 7)
+first_reviewer.rate_hw(second_student, 'Python', 9)
+
+second_student.rate_lecturer(second_lecturer, 'Git', 9)
+second_student.rate_lecturer(second_lecturer, 'Git', 8)
+second_student.rate_lecturer(second_lecturer, 'Git', 9)
 
 print(first_student)
 print(second_student)
@@ -111,3 +127,6 @@ print(second_lecturer)
 
 print(first_reviewer)
 print(second_reviewer)
+
+print(first_student > second_student)
+print(first_lecturer < second_lecturer)
